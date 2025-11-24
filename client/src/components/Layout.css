@@ -1,0 +1,110 @@
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-header {
+  background: white;
+  border-bottom: 1px solid #E5E7EB;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-left .logo {
+  color: #4F46E5;
+  font-size: 24px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #111827;
+  font-size: 14px;
+}
+
+.user-role {
+  font-size: 11px;
+  text-transform: capitalize;
+}
+
+.badge-archivist {
+  background-color: #DBEAFE;
+  color: #1E40AF;
+}
+
+.badge-researcher {
+  background-color: #D1FAE5;
+  color: #065F46;
+}
+
+.badge-public {
+  background-color: #FEF3C7;
+  color: #92400E;
+}
+
+.btn-logout {
+  font-size: 13px;
+  padding: 8px 16px;
+}
+
+.layout-main {
+  flex: 1;
+  padding: 20px 0;
+}
+
+.layout-footer {
+  background: #F9FAFB;
+  border-top: 1px solid #E5E7EB;
+  padding: 20px;
+  text-align: center;
+}
+
+.layout-footer p {
+  color: #6B7280;
+  font-size: 14px;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .header-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .user-info {
+    align-items: flex-start;
+  }
+}

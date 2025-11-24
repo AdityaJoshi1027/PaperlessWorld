@@ -1,0 +1,104 @@
+.dashboard {
+  padding: 20px;
+}
+
+.dashboard-header {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #E5E7EB;
+}
+
+.dashboard-header h1 {
+  color: #111827;
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.dashboard-header p {
+  color: #6B7280;
+  font-size: 16px;
+}
+
+.dashboard-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.tab {
+  padding: 12px 24px;
+  border: none;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6B7280;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tab:hover:not(:disabled) {
+  background: #F9FAFB;
+  color: #111827;
+}
+
+.tab.active {
+  background: #4F46E5;
+  color: white;
+  box-shadow: 0 4px 6px rgba(79, 70, 229, 0.3);
+}
+
+.tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dashboard-content {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-height: 400px;
+}
+
+.overview-section h2,
+.documents-section h2,
+.users-section h2,
+.feedback-section h2,
+.search-section h2,
+.browse-section h2 {
+  color: #111827;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.recent-activity {
+  margin-top: 40px;
+}
+
+.recent-activity h3 {
+  color: #374151;
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 15px;
+  }
+
+  .dashboard-tabs {
+    flex-direction: column;
+  }
+
+  .tab {
+    width: 100%;
+    text-align: left;
+  }
+
+  .dashboard-content {
+    padding: 20px;
+  }
+}
