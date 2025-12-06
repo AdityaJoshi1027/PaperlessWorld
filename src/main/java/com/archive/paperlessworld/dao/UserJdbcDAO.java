@@ -118,7 +118,7 @@ public class UserJdbcDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error finding users by role: " + role, e);
+            throw DatabaseOperationException.selectFailed("User", e);
         }
         
         return users;
@@ -184,10 +184,14 @@ public class UserJdbcDAO {
                 try {
                     conn.rollback();
                 } catch (SQLException ex) {
-                    throw new RuntimeException("Error rolling back transaction", ex);
+                    throw DatabaseOperationException.rollbackFailed(ex);
                 }
             }
-            throw new RuntimeException("Error saving user", e);
+            if (user.getId() == null) {
+                throw DatabaseOperationException.insertFailed("User", e);
+            } else {
+                throw DatabaseOperationException.updateFailed("User", user.getId(), e);
+            }
         } finally {
             // Clean up resources
             try {
@@ -198,7 +202,7 @@ public class UserJdbcDAO {
                     conn.close();
                 }
             } catch (SQLException e) {
-                throw new RuntimeException("Error closing resources", e);
+                throw new DatabaseOperationException("Error closing resources", e);
             }
         }
     }

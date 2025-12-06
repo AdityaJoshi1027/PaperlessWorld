@@ -1,5 +1,7 @@
 package com.archive.paperlessworld.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,11 +14,14 @@ import com.archive.paperlessworld.dao.UserJdbcDAO;
 import com.archive.paperlessworld.dto.AuthResponse;
 import com.archive.paperlessworld.dto.LoginRequest;
 import com.archive.paperlessworld.dto.RegisterRequest;
+import com.archive.paperlessworld.exception.UserNotFoundException;
 import com.archive.paperlessworld.model.User;
 import com.archive.paperlessworld.security.JwtTokenProvider;
 
 @Service
 public class AuthService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
     @Autowired
     private UserJdbcDAO userJdbcDAO;
@@ -31,9 +36,12 @@ public class AuthService {
     private AuthenticationManager authenticationManager;
 
     public AuthResponse register(RegisterRequest request) {
+        logger.info("Attempting to register user with email: {}", request.getEmail());
+        
         // Check if user already exists
         if (userJdbcDAO.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already exists");
+            logger.warn("Registration failed: Email {} already exists", request.getEmail());
+            throw new IllegalArgumentException("Email already exists");
         }
 
         // Create new user
@@ -61,6 +69,7 @@ public class AuthService {
         }
 
         user = userJdbcDAO.save(user);
+        logger.info("User registered successfully with ID: {}", user.getId());
 
         // Generate token
         UserDetails userDetails = org.springframework.security.core.userdetails.User
@@ -83,6 +92,8 @@ public class AuthService {
     }
 
     public AuthResponse login(LoginRequest request) {
+        logger.info("Login attempt for email: {}", request.getEmail());
+        
         // Authenticate user
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -93,12 +104,18 @@ public class AuthService {
 
         // Get user details
         User user = userJdbcDAO.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> {
+                    logger.error("Login failed: User not found for email {}", request.getEmail());
+                    return new UserNotFoundException("User not found with email: " + request.getEmail());
+                });
 
         // Check if user is approved
         if (!"approved".equals(user.getStatus())) {
-            throw new RuntimeException("Account pending approval");
+            logger.warn("Login failed: Account pending approval for email {}", request.getEmail());
+            throw new SecurityException("Account pending approval");
         }
+        
+        logger.info("User {} logged in successfully", request.getEmail());
 
         // Generate token
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();

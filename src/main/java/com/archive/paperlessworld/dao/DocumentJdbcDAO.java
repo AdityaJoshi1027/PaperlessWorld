@@ -15,6 +15,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.archive.paperlessworld.exception.DatabaseOperationException;
 import com.archive.paperlessworld.model.ArchiveDocument;
 
 /**
@@ -51,7 +52,7 @@ public class DocumentJdbcDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error finding ArchiveDocument by ID: " + id, e);
+            throw DatabaseOperationException.selectFailed("ArchiveDocument", e);
         }
         
         return Optional.empty();
@@ -74,7 +75,7 @@ public class DocumentJdbcDAO {
                 documents.add(mapResultSetToDocument(rs));
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error finding all documents", e);
+            throw DatabaseOperationException.selectFailed("ArchiveDocument", e);
         }
         
         return documents;
@@ -100,7 +101,7 @@ public class DocumentJdbcDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error finding documents by uploader: " + uploaderId, e);
+            throw DatabaseOperationException.selectFailed("ArchiveDocument", e);
         }
         
         return documents;
@@ -126,7 +127,7 @@ public class DocumentJdbcDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error finding documents by category: " + category, e);
+            throw DatabaseOperationException.selectFailed("ArchiveDocument", e);
         }
         
         return documents;
@@ -152,7 +153,7 @@ public class DocumentJdbcDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error searching documents by title: " + searchTerm, e);
+            throw DatabaseOperationException.selectFailed("ArchiveDocument", e);
         }
         
         return documents;
@@ -186,7 +187,7 @@ public class DocumentJdbcDAO {
                 pstmt.setLong(6, ArchiveDocument.getFileSize() != null ? ArchiveDocument.getFileSize() : 0L);
                 pstmt.setLong(7, ArchiveDocument.getUploadedBy() != null ? Long.parseLong(ArchiveDocument.getUploadedBy().getId()) : 0L);
                 pstmt.setString(8, ArchiveDocument.getCategory());
-                pstmt.setString(9, ArchiveDocument.getTags() != null ? String.join(",", ArchiveDocument.getTags()) : null);
+                pstmt.setString(9, ArchiveDocument.getTags());
                 pstmt.setString(10, ArchiveDocument.getAccessLevel() != null ? ArchiveDocument.getAccessLevel() : "public");
                 
                 int affectedRows = pstmt.executeUpdate();
@@ -228,10 +229,14 @@ public class DocumentJdbcDAO {
                 try {
                     conn.rollback();
                 } catch (SQLException ex) {
-                    throw new RuntimeException("Error rolling back transaction", ex);
+                    throw DatabaseOperationException.rollbackFailed(ex);
                 }
             }
-            throw new RuntimeException("Error saving ArchiveDocument", e);
+            if (ArchiveDocument.getId() == null) {
+                throw DatabaseOperationException.insertFailed("ArchiveDocument", e);
+            } else {
+                throw DatabaseOperationException.updateFailed("ArchiveDocument", ArchiveDocument.getId(), e);
+            }
         } finally {
             // Clean up resources
             try {
@@ -242,7 +247,7 @@ public class DocumentJdbcDAO {
                     conn.close();
                 }
             } catch (SQLException e) {
-                throw new RuntimeException("Error closing resources", e);
+                throw new DatabaseOperationException("Error closing resources", e);
             }
         }
     }
@@ -292,6 +297,54 @@ public class DocumentJdbcDAO {
     /**
      * Count documents by uploader using JDBC
      */
+    /**
+     * Delete ArchiveDocument by ID with transaction management
+     */
+    public void delete(String id) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        
+        try {
+            conn = dataSource.getConnection();
+            conn.setAutoCommit(false);
+            
+            String sql = "DELETE FROM documents WHERE id = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, Long.parseLong(id));
+            
+            int affectedRows = pstmt.executeUpdate();
+            
+            if (affectedRows == 0) {
+                throw new SQLException("Deleting ArchiveDocument failed, no rows affected");
+            }
+            
+            conn.commit();
+            
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    throw DatabaseOperationException.rollbackFailed(ex);
+                }
+            }
+            throw DatabaseOperationException.deleteFailed("ArchiveDocument", id, e);
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                throw new DatabaseOperationException("Error closing resources", e);
+            }
+        }
+    }
+
+    /**
+     * Count documents by uploader ID
+     */
     public int countByUploader(String uploaderId) {
         String sql = "SELECT COUNT(*) FROM documents WHERE uploader_id = ?";
         
@@ -306,7 +359,7 @@ public class DocumentJdbcDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error counting documents by uploader: " + uploaderId, e);
+            throw DatabaseOperationException.selectFailed("ArchiveDocument Count", e);
         }
         
         return 0;
@@ -329,7 +382,7 @@ public class DocumentJdbcDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error calculating total size by uploader: " + uploaderId, e);
+            throw DatabaseOperationException.selectFailed("ArchiveDocument Size", e);
         }
         
         return 0;

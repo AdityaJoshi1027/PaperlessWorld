@@ -2,7 +2,6 @@ package com.archive.paperlessworld.controller;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +44,7 @@ public class AsyncDemoController {
         Map<String, Object> response = new HashMap<>();
         
         // Trigger async email sending
-        CompletableFuture<String> emailFuture = asyncTaskService.sendEmailAsync(
+        asyncTaskService.sendEmailAsync(
             recipient, subject, "This is a demo email from Paperless World"
         );
         
@@ -69,7 +68,7 @@ public class AsyncDemoController {
         Map<String, Object> response = new HashMap<>();
         
         // Trigger async document processing
-        CompletableFuture<String> processFuture = asyncTaskService.processDocumentAsync(documentId, operation);
+        asyncTaskService.processDocumentAsync(documentId, operation);
         
         response.put("success", true);
         response.put("message", "Document processing started");
@@ -97,7 +96,7 @@ public class AsyncDemoController {
         }
         
         // Trigger batch processing
-        CompletableFuture<String> batchFuture = asyncTaskService.batchProcessDocuments(documentIds);
+        asyncTaskService.batchProcessDocuments(documentIds);
         
         response.put("success", true);
         response.put("message", "Batch processing started");
@@ -119,7 +118,7 @@ public class AsyncDemoController {
         Map<String, Object> response = new HashMap<>();
         
         // Trigger async notification
-        CompletableFuture<Void> notifyFuture = asyncTaskService.sendNotificationAsync(userId, message);
+        asyncTaskService.sendNotificationAsync(userId, message);
         
         response.put("success", true);
         response.put("message", "Notification sent asynchronously");

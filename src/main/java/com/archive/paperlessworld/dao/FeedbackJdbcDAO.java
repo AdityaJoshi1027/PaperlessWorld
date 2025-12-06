@@ -17,6 +17,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.archive.paperlessworld.exception.DatabaseOperationException;
 import com.archive.paperlessworld.model.Feedback;
 
 /**
@@ -228,12 +229,16 @@ public class FeedbackJdbcDAO {
                     conn.rollback(); // Rollback on error
                     System.err.println("Transaction rolled back due to error: " + e.getMessage());
                 } catch (SQLException ex) {
-                    System.err.println("Error rolling back transaction: " + ex.getMessage());
+                    throw DatabaseOperationException.rollbackFailed(ex);
                 }
             }
             System.err.println("Error saving feedback: " + e.getMessage());
             e.printStackTrace();
-            throw new RuntimeException("Failed to save feedback", e);
+            if (feedback.getId() == null) {
+                throw DatabaseOperationException.insertFailed("Feedback", e);
+            } else {
+                throw DatabaseOperationException.updateFailed("Feedback", feedback.getId(), e);
+            }
         } finally {
             try {
                 if (pstmt != null) pstmt.close();
@@ -242,7 +247,7 @@ public class FeedbackJdbcDAO {
                     conn.close();
                 }
             } catch (SQLException e) {
-                System.err.println("Error closing resources: " + e.getMessage());
+                throw new DatabaseOperationException("Error closing resources", e);
             }
         }
     }

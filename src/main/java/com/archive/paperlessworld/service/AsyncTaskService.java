@@ -37,9 +37,9 @@ public class AsyncTaskService {
 
     /**
      * Async method to send email notification
-     * Uses @Async with default taskExecutor
+     * Uses specialized notificationExecutor
      */
-    @Async("taskExecutor")
+    @Async("notificationExecutor")
     public CompletableFuture<String> sendEmailAsync(String recipient, String subject, String body) {
         try {
             logger.info("Sending email to {} - Thread: {}", recipient, Thread.currentThread().getName());

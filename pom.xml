@@ -58,26 +58,6 @@
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
         
-        <!-- JSP Support - Tomcat Jasper for JSP compilation -->
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-jasper</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        
-        <!-- JSTL for JSP Tag Libraries -->
-        <dependency>
-            <groupId>jakarta.servlet.jsp.jstl</groupId>
-            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.glassfish.web</groupId>
-            <artifactId>jakarta.servlet.jsp.jstl</artifactId>
-            <version>3.0.1</version>
-        </dependency>
-        
         <!-- HikariCP Connection Pool (included in spring-boot-starter-jdbc) -->
         
         <!-- JWT -->

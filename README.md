@@ -43,10 +43,15 @@ A full-stack web application for managing digital archives with document storage
 - **BCrypt Password Hashing**: Industry-standard password security
 - **RESTful API**: Clean and documented API endpoints
 - **Responsive UI**: Modern React-based user interface
-- **JSP Support**: Traditional server-side rendering for academic requirements
 - **Multi-threading**: Asynchronous processing with ExecutorService
 - **JDBC Integration**: Direct database connectivity without ORM
 - **File Upload**: Document upload with validation
+
+### Innovation Features
+- **Advanced Document Analysis**: Auto-tagging using keyword extraction algorithm
+- **Data Integrity**: SHA-256 Checksum verification for uploaded documents
+- **Asynchronous Processing**: Background task execution for performance optimization
+- **Modernized Architecture**: Pure REST API backend with React frontend
 
 ---
 
@@ -57,8 +62,6 @@ A full-stack web application for managing digital archives with document storage
 - **Spring Boot 3.5.0**: Application framework
 - **Spring Security 6.5.0**: Authentication and authorization
 - **JDBC**: Pure database connectivity
-- **JSP 3.0 + JSTL**: Server-side rendering
-- **Jakarta Servlet API 6.0**: Servlet implementation
 - **JWT (JJWT 0.11.5)**: Token-based authentication
 - **BCrypt**: Password hashing
 - **MySQL Connector**: Database driver
@@ -83,20 +86,20 @@ A full-stack web application for managing digital archives with document storage
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                      Client Layer                            │
-│  ┌──────────────┐              ┌──────────────┐            │
-│  │  React App   │              │  JSP Pages   │            │
-│  │  (Port 3000) │              │  (Port 8080) │            │
-│  └──────────────┘              └──────────────┘            │
-└────────────┬────────────────────────┬────────────────────────┘
-             │                        │
-             │  REST API / HTTP       │
-             │                        │
-┌────────────┴────────────────────────┴────────────────────────┐
+│  ┌──────────────┐                                          │
+│  │  React App   │                                          │
+│  │  (Port 3000) │                                          │
+│  └──────────────┘                                          │
+└────────────┬─────────────────────────────────────────────────┘
+             │
+             │  REST API / HTTP
+             │
+┌────────────┴─────────────────────────────────────────────────┐
 │                    Application Layer                          │
 │  ┌────────────────────────────────────────────────────────┐  │
 │  │           Spring Boot Application (Port 8080)          │  │
 │  │  ┌──────────────┐  ┌──────────────┐  ┌─────────────┐ │  │
-│  │  │ Controllers  │  │  Servlets    │  │  Security   │ │  │
+│  │  │ Controllers  │  │  Async Tasks │  │  Security   │ │  │
 │  │  └──────────────┘  └──────────────┘  └─────────────┘ │  │
 │  │  ┌──────────────┐  ┌──────────────┐  ┌─────────────┐ │  │
 │  │  │  Services    │  │     DAOs     │  │   Threads   │ │  │
@@ -114,15 +117,14 @@ A full-stack web application for managing digital archives with document storage
 └────────────────────────────────────────────────────────────────┘
 ```
 
-### Academic Requirements Compliance
-This project fulfills academic requirements by implementing:
+### Key Implementations
+This project implements:
 - ✅ **JDBC**: Direct database connectivity with PreparedStatement
-- ✅ **Servlets**: LoginServlet, RegisterServlet, DashboardServlet
-- ✅ **JSP**: Server-side rendering with JSTL tags
+- ✅ **RESTful API**: Modern API design principles
 - ✅ **Multi-threading**: ExecutorService and @Async annotations
 - ✅ **Security**: BCrypt password hashing and JWT authentication
 - ✅ **MVC Pattern**: Clear separation of concerns
-- ✅ **RESTful API**: Modern API design principles
+- ✅ **Advanced Analysis**: Auto-tagging and Checksum verification
 
 ---
 
